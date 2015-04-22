@@ -155,6 +155,12 @@ router.get('/create', function(request, response, toss) {
   // When the server receives a request for "/create", this code runs
   
   response.locals.layout = 'layout';
+  
+  // Go straight to the archive if no layers are specified
+  if (!request.query.layers) {
+    response.redirect('/archive');
+    return;
+  }
 
   // Make a new Phrase in memory, with the parameters that come from the URL 
   // ?width=25&height=25&top=25&left=25&color=#ff0000

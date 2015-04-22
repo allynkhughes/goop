@@ -104,17 +104,29 @@ thing as filling in the form and pressing "Submit".
 <script>
     
     var numClicks = 0;
-    
+
     $('.button-container .button').click(function(event) {
        numClicks += 1;
        event.preventDefault();
        
        var num = $(this).html();
+       var layer = $('#' + num);
        
-       $('#' + num).toggle();
-       
-       var layers = $('.div3:visible').map(function() { return this.id; }).get().join(',');
-       $('#layers').val(layers);
+       layer.toggle();
+       layer.css('zIndex', numClicks);
+
+       // Make a list of layer numbers by finding all visible layers, sorted in reverse by zIndex
+       var visibleLayers = $('.div3:visible').get().sort(function(a, b) {
+           var az = parseInt($(a).css('zIndex'));
+           var bz = parseInt($(b).css('zIndex'));
+           if (az < bz) return -1;
+           if (az > bz) return 1;
+           return 0;
+       });
+       visibleLayers = $.map(visibleLayers, function(el) { 
+           return el.id; 
+       });
+       $('#layers').val(visibleLayers.join(','));
        
        if (numClicks == 30) {
            $('form').submit();
